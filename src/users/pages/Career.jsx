@@ -39,7 +39,7 @@ function Career() {
 
              </div>
              <div className='px-4 col-span-1 flex justify-end md:flex-none  md:justify-start '>
-              <button className='bg-blue-800 p-4 text-white  md:float-start   rounded-sm  flex  md:items-center gap-1 h-[50px] '>Apply <GrShare />
+              <button className='bg-blue-800 p-4  text-white  md:float-start   rounded-sm  flex  md:items-center gap-1 h-[50px] '>Apply <GrShare />
                 </button>
 
              </div>

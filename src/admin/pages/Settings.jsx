@@ -1,51 +1,88 @@
-import React from 'react'
-import AdminHeader from '../components/AdminHeader'
-import Footer from '../../components/Footer'
-import AdminSidebar from '../components/AdminSidebar'
+import React from "react";
+import AdminHeader from "../components/AdminHeader";
+import AdminSidebar from "../components/AdminSidebar";
+import Footer from "../../components/Footer";
 import { FaPen } from "react-icons/fa";
-
 
 function Settings() {
   return (
     <>
-      <AdminHeader/>
-      <div className='min-h-[60vh] md:grid grid-cols-5'>
-        <div className='col-span-1'>
-          <AdminSidebar/>
+      <AdminHeader />
+      <div className="min-h-[60vh] md:grid grid-cols-4">
+        <div className="col-span-1">
+          <AdminSidebar />
         </div>
-        <div className='col-span-4'>
-          <h1 className='text-center text-3xl my-5 font-bold'>Admin Settings</h1>
-          <div className="md:grid grid-cols-2  gap-3">
+        <div className="col-span-3">
+          <h1 className="text-center text-3xl my-5">Admin Settings</h1>
+          <div className="md:grid grid-cols-2">
             <div className="p-3">
-              <p className='text-justify font-bold'>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum deserunt provident a deleniti aut qui, veniam voluptatum accusantium placeat quis nemo quod delectus soluta tenetur repellendus magni libero repudiandae velit!
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore eligendi, dolore impedit voluptatibus adipisci consequatur velit voluptates earum aperiam eaque maiores, error veritatis praesentium officia quis assumenda id distinctio placeat!
+              <p className="text-justify">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae
+                eveniet, soluta quibusdam, molestias distinctio aliquid, facilis
+                animi in non obcaecati perspiciatis commodi itaque voluptates
+                alias neque officiis esse error. Eveniet. Lorem ipsum dolor sit
+                amet consectetur adipisicing elit. Impedit excepturi in
+                laudantium temporibus voluptatem facilis veritatis libero
+                expedita iste, cupiditate cum aspernatur! Id nostrum commodi
+                unde maiores ea cupiditate atque?
               </p>
-              <p className='text-justify font-bold'>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum deserunt provident a deleniti aut qui, veniam voluptatum accusantium placeat quis nemo quod delectus soluta tenetur repellendus magni libero repudiandae velit!
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore eligendi, dolore impedit voluptatibus adipisci consequatur velit voluptates earum aperiam eaque maiores, error veritatis praesentium officia quis assumenda id distinctio placeat!
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto repellat vero ipsam sequi atque, magni nostrum voluptatibus sunt reiciendis qui quaerat, a tempore assumenda placeat necessitatibus. Accusamus eligendi deserunt nam!
+              <p className="text-justify mt-2">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                Perspiciatis, iure id, iste eligendi repellendus ea consequatur
+                deserunt nesciunt perferendis illo doloremque, unde magni.
+                Libero assumenda praesentium suscipit eos consectetur aliquam.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi
+                architecto temporibus quas laudantium, nesciunt quia excepturi
+                porro pariatur deserunt exercitationem, modi error debitis ex,
+                sed ratione ab ipsam at consectetur. Lorem ipsum dolor sit amet
+                consectetur adipisicing elit. Reprehenderit alias temporibus, ad
+                adipisci dolores autem consequatur tempora doloremque molestiae
+                unde laudantium ratione veniam aspernatur, inventore totam nemo
+                illo rerum repellat!
               </p>
             </div>
             <div className="p-2">
-              <div className="w-full flex justify-center h-full bg-sky-300 py-4 ">
-                <div className='' style={{width:"300px"}}>
-                  <div className="relative">
-                  <img src="https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png" alt="admin" className='mx-auto' style={{width:"80px"}} />
+              <div className="w-full h-full bg-blue-300 py-4 px-7 rounded">
+                <div className="relative">
+                  <img
+                    src="https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png"
+                    alt=""
+                    className="w-[40%] h-[40%] mx-auto"
+                  />
                   <label htmlFor="file">
-                    <input type="file" className='hidden' id='file'/>
-                    <span className='bg-yellow-400 p-1 text-white rounded-lg border border-black absolute bottom-1 right-25'><FaPen /></span>
+                    <input type="file" name="" id="file" className="hidden" />
+                    <div className="bg-yellow-400 p-3 text-white rounded-xl absolute bottom-2 right-45 ">
+                      <FaPen />
+                    </div>
                   </label>
                 </div>
+                <input
+                  type="text"
+                  className="w-full bg-white border rounded-sm my-5 py-2"
+                  placeholder="Username"
+                />
+                <input
+                  type="text"
+                  className="w-full bg-white border rounded-sm my-5 py-2"
+                  placeholder="Password"
+                />
+                <input
+                  type="text"
+                  className="w-full bg-white border rounded-sm my-5 py-2"
+                  placeholder="Confirm password"
+                />
+                <div className="mb-4 grid grid-cols-2 gap-2">
+                  <button className="bg-red-500 text-white p-3 hover:bg-white hover:border-red-500 hover:text-red-500 rounded">Reset</button>
+                  <button className="bg-green-500 text-white p-3 hover:bg-white hover:border-red-500  hover:text-green-500 rounded">Update</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
-  )
+  );
 }
 
-export default Settings
+export default Settings;
