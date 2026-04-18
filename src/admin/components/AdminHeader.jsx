@@ -3,6 +3,8 @@ import { FaPowerOff } from "react-icons/fa";
 
 
 function AdminHeader() {
+
+  
   return (
     <>
        <div className="w-full p-3 flex justify-between">
@@ -10,7 +12,7 @@ function AdminHeader() {
             <img src="/Book.png" alt="book" className='w-[50px]'/>
             <span className='text-xl'>BOOK STORE</span>
         </div>
-        <button className='flex items-center gap-2 border shadow rounded-lg p-3 hover:bg-black hover:text-white'>
+        <button className='flex items-center gap-2 border shadow rounded-lg p-3 hover:bg-black hover:text-white' >
             <FaPowerOff />
             Logout
         </button>

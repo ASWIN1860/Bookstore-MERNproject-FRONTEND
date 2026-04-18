@@ -1,36 +1,91 @@
-import React, { useState } from 'react'
-import AdminHeader from '../components/AdminHeader'
-import AdminSidebar from '../components/AdminSidebar'
-import Footer from '../../components/Footer'
+import React, { useState, useEffect } from "react";
+import AdminHeader from "../components/AdminHeader";
+import AdminSidebar from "../components/AdminSidebar";
+import Footer from "../../components/Footer";
+
+import {toast} from "react-toastify"
+
+import base_Url from "../../service/baseUrl";
+
+import {
+  getAllAdminBooksApi,
+  getAdminAllUsersApi,
+  adminApproveBookApi
+} from "../../service/allApis";
 
 function Booklist() {
-  const [bookstatus, setbookstatus] = useState(true)
-  const [userstatus, setuserstatus] = useState(false)
+  const [bookstatus, setbookstatus] = useState(true);
+  const [userstatus, setuserstatus] = useState(false);
+  const [bookList, setBookList] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
 
-  return (
+  useEffect(() => {
+    if (bookstatus) {
+      getBookList();
+    }
+    if (userstatus) {
+      getUserList();
+      console.log(allUsers)
+    }
+  }, [userstatus]);
+
+
+  const getBookList = async () => {
+    const response = await getAllAdminBooksApi();
+    if (response.status === 200) {
+      console.log(response.data);
+      setBookList(response.data);
+    } else {
+      console.log(response);
+    }
+  };
+
+  const getUserList = async () => {
+    const response = await getAdminAllUsersApi();
+    if (response.status === 200) {
+      console.log(response?.data);
+      setAllUsers(response?.data);
+    } else {
+      console.log(response);
+    }
+  };
+  
+  const bookUpproveList=async(id)=>{
+    const response=await adminApproveBookApi(id)
+    if(response.status===200){
+      console.log(response)
+      toast.success("Book Upproved")
+      getBookList()
+    }
+    else{
+      console.log(response)
+      toast.error("Something went wrong!!!")
+    }
+  }
+
+  return(
     <>
       <AdminHeader />
-      <div className='min-h-[60vh] grid grid-cols-4'>
-        
+      
+      <div className="min-h-[60vh] grid grid-cols-1 lg:grid-cols-4">
         <div className="col-span-1">
           <AdminSidebar />
         </div>
 
-        <div className="col-span-3">
-          <h2 className='text-center text-2xl my-5'>Resources</h2>
+        <div className="col-span-1 lg:col-span-3">
+          <h2 className="text-center text-2xl my-5">Resources</h2>
 
           {/* Tabs */}
-          <div className='flex justify-center items-center'>
-
+          <div className="flex justify-center items-center px-4">
             <div
               onClick={() => {
-                setbookstatus(true)
-                setuserstatus(false)
+                setbookstatus(true);
+                setuserstatus(false);
               }}
               className={
                 bookstatus
-                  ? 'p-3 border-l border-r border-t rounded-t-sm border-gray-600 text-blue-600'
-                  : 'p-3 border-b border-gray-600 cursor-pointer'
+                  ? "p-3 border-l border-r border-t rounded-t-sm border-gray-600 text-blue-600"
+                  : "p-3 border-b border-gray-600 cursor-pointer"
               }
             >
               All Books
@@ -38,77 +93,99 @@ function Booklist() {
 
             <div
               onClick={() => {
-                setbookstatus(false)
-                setuserstatus(true)
+                setbookstatus(false);
+                setuserstatus(true);
               }}
               className={
                 userstatus
-                  ? 'p-3 border-l border-r border-t rounded-t-sm border-gray-600 text-blue-600'
-                  : 'p-3 border-b border-gray-600 cursor-pointer'
+                  ? "p-3 border-l border-r border-t rounded-t-sm border-gray-600 text-blue-600"
+                  : "p-3 border-b border-gray-600 cursor-pointer"
               }
             >
               Users
             </div>
-
           </div>
 
           {/* BOOKS SECTION */}
           {bookstatus && (
-            <div className='px-10 py-5 flex flex-wrap justify-around gap-4'>
-
-              <div className='p-1 w-[70%] md:w-[16rem] shadow-xl text-center'>
-                <img
-                  src="https://imgs.search.brave.com/Wx962ZC13iRwUEwSmyGGQJ3MS2IgyDTOwT5p2pTvGS0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/OTE2RE02S3VYS0wu/anBn"
-                  alt="no img"
-                  style={{ height: "300px", width: '100%' }}
-                />
-                <h2 className='text-lg'>Harry potter</h2>
-                <p>Lorem ipsum....</p>
-                <h4 className='text-lg text-blue-600'>$40</h4>
-                <button className='bg-green-500 text-white border border-green-500 w-full py-2 hover:bg-white hover:text-blue-900'>
-                  Approve
-                </button>
-                
-              </div>
-              
-
+            <div className="px-4 md:px-10 py-5 flex flex-wrap justify-center lg:justify-around gap-6">
+              {bookList.length > 0 ? (
+                <>
+                  {bookList.map((item, index) => (
+                    <div key={index} className="p-1 w-full sm:w-[45%] md:w-[16rem] shadow-xl text-center flex flex-col justify-between">
+                      <div>
+                        <img
+                          src={item?.image}
+                          alt="no img"
+                          className="object-cover"
+                          style={{ height: "300px", width: "100%" }}
+                        />
+                        <h2 className="text-lg mt-2 font-semibold">{item?.title}</h2>
+                        <p className="text-sm px-2">{item?.abstract.slice(0, 90)}....</p>
+                      </div>
+                      <div className="mt-auto">
+                        <h4 className="text-lg text-blue-600 my-2">
+                          &#8377;{item?.price}
+                        </h4>
+                        {item?.status === "pending" ? (
+                          <button onClick={()=>{bookUpproveList(item?._id)}} className="bg-green-500 text-white border border-green-500 w-full py-2 hover:bg-white hover:text-blue-900 transition-colors">
+                            Approve
+                          </button>
+                        ) : (
+                          <h2 className="text-green-600 text-center py-2">Approved</h2>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <h2 className="m-5 text-center text-red-600 text-xl">
+                  No Books Available
+                </h2>
+              )}
             </div>
           )}
 
           {/* USERS SECTION */}
           {userstatus && (
-            <div className='px-10 py-5 flex flex-wrap justify-around gap-4'>
+            <div className="px-4 md:px-10 py-5 flex flex-wrap justify-center lg:justify-around gap-6">
+              {allUsers.length > 0 ? (
+                <>
+                  {allUsers.map((item, index) => (
+                    <div key={index} className="w-full sm:w-[45%] lg:w-[18rem] border bg-gray-300 py-4 px-4 rounded-sm">
+                      <h1 className="text-center mb-4 text-amber-900 truncate text-xs">
+                        ID : {item?._id}
+                      </h1>
 
-              <div className='max-w-[16rem] border bg-gray-300 py-2 px-4'>
-                <h1 className='text-center my-5 text-amber-900'>
-                  ID : qd23r3d232f3f23rf
-                </h1>
+                      <div className="flex items-center gap-4">
+                        <div className="shrink-0">
+                          <img
+                            src={item.profile ? (item.profile.startsWith("https://lh3.googleusercontent.com") ? item.profile : `${base_Url}/uploadImg/${item.profile}`) : "https://www.pngall.com/wp-content/uploads/12/Avatar-PNG-Image-File.png"}
+                            alt="userpic"
+                            className="w-16 h-16 rounded-full object-cover"
+                          />
+                        </div>
 
-                <div className='grid grid-cols-3 gap-3'>
-                  <div className='col-span-1'>
-                    <img
-                      src="https://imgs.search.brave.com/DKL9kjR3cYqZYpV0QIEydF3ctm6DrIA6HOa30FKsjsk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvNTAwcC8x/NS8yOC91c2VyLWlj/b24tcGVyc29uLXN5/bWJvbC12ZWN0b3It/Mjg2MTUyOC5qcGc"
-                      alt="userpic"
-                      width="150px"
-                    />
-                  </div>
-
-                  <div className='col-span-2 flex flex-col justify-center'>
-                    <h2 className='text-blue-800 text-lg'>Username</h2>
-                    <p className='text-green-800'>usermail@gmail.com</p>
-                  </div>
-                </div>
-
-              </div>
-
+                        <div className="flex flex-col justify-center overflow-hidden">
+                          <h2 className="text-blue-800 text-lg font-medium truncate">{item?.username}</h2>
+                          <p className="text-green-800 text-sm truncate">{item?.email}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <h2 className="text-center text-red-600 w-full mt-10">
+                  No users available!!!
+                </h2>
+              )}
             </div>
           )}
-
         </div>
       </div>
       <Footer />
     </>
-  )
+  );
 }
 
-export default Booklist
+export default Booklist;
