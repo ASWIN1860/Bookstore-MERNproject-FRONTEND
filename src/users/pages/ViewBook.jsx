@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../../components/Footer";
 import { FaEye } from "react-icons/fa";
@@ -7,7 +7,11 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { IoCameraSharp } from "react-icons/io5";
 
-import { getBookByIdApi } from "../../service/allApis";
+import {loadStripe} from '@stripe/stripe-js'
+
+import { getBookByIdApi,purchaseBookApi } from "../../service/allApis";
+import { toast } from "react-toastify";
+import base_Url from "../../service/baseUrl";
 
 function ViewBook() {
   const [modalStatus, setModalStatus] = useState(false);
@@ -26,6 +30,23 @@ function ViewBook() {
     console.log(response)
     if(response?.status===200){
       setBookData(response?.data)
+    }
+  }
+
+  const handlePayment=async()=>{
+    const stripe=await loadStripe("pk_test_51TPETb45INHyrq0Ll8XC3TWFF5sd4QsinlFacd7saY51Mb0oUWqVU775Vx4QNzU1nf2TeTQhvWMvvHsQecDyKOUA00FJ7vLkCg")
+    const response=await purchaseBookApi(bookData)
+    if(response.status===200){
+      if(response.data.checkoutPaymentUrl){
+        //redirecting to payment gateway
+        window.location.href=response.data.checkoutPaymentUrl
+      }
+      else{
+        toast.warning("Payment Gateway Error!!")
+      }
+    }
+    else{
+      toast.error("Something Went Wrong!!!")
     }
   }
 
@@ -66,11 +87,11 @@ function ViewBook() {
             </p>
 
             <div className="gap-4 flex justify-end ">
-              <button className="bg-blue-800 p-4 rounded-xl flex items-end text-white">
+              <Link to={'/books'} className="bg-blue-800 p-4 rounded-xl flex items-end text-white">
                 <MdKeyboardDoubleArrowLeft className="text-xl " />
                 Back
-              </button>
-              <button className="bg-green-700 p-4 rounded-xl text-white">
+              </Link>
+              <button className="bg-green-700 p-4 rounded-xl text-white" onClick={handlePayment}>
                 Buy <span className="text-yellow-400">{bookData?.discountPrice}</span>
               </button>
             </div>
@@ -100,10 +121,19 @@ function ViewBook() {
                   
                     
                       <div className="flex overflow-x-auto justify-between items-center"> 
-                    <img src={bookData?.image} alt="" width={'300px'}/>
-                    <img src="http://www.thrillaura.com/cdn/shop/files/IKIGAI-FRONT-HARD-pdf.jpg?v=1732457900" alt="" width={'300px'}/>
-                    <img src="http://www.thrillaura.com/cdn/shop/files/IKIGAI-FRONT-HARD-pdf.jpg?v=1732457900" alt="" width={'300px'}/>
-                    <img src="http://www.thrillaura.com/cdn/shop/files/IKIGAI-FRONT-HARD-pdf.jpg?v=1732457900" alt="" width={'300px'}/>
+                    {
+                      bookData?.uploadImg?.length>0 ?
+                      <>
+                      {
+                        bookData?.uploadImg?.map(item=>(
+                          <img src={`${base_Url}/uploadImg/${item}`} alt="" width={'300px'}/>
+                        ))
+                      }
+                      </>
+                      :
+                      <h2 className="text-2xl text-red-600">No Book images !!!</h2>
+                    }
+                  
                   </div>
                   
                 </div>

@@ -9,8 +9,13 @@ import { jwtDecode } from "jwt-decode";
 
 import { GoogleLogin } from "@react-oauth/google";
 
+import { authRoleContext } from "../ContextApi/AuthContextApi";
+import { useContext } from "react";
+
 const Auth = ({ register }) => {
   const navigate = useNavigate();
+
+  const {setRole}=useContext(authRoleContext)
 
   const [user, setUser] = useState({
     username: "",
@@ -47,6 +52,8 @@ const Auth = ({ register }) => {
         sessionStorage.setItem('uname', response?.data?.username);
         sessionStorage.setItem('dp', response?.data?.profile);
         sessionStorage.setItem('bio', response?.data?.bio);
+        sessionStorage.setItem('role', response?.data?.role);
+        setRole(response?.data?.role)
         toast.success("Signin Successful");
         setUser({ username: "", email: "", password }); 
         if(response?.data?.role === "admin"){
@@ -78,6 +85,8 @@ const Auth = ({ register }) => {
       sessionStorage.setItem("uname", response?.data.username);
       sessionStorage.setItem("dp", response?.data?.profile);
       sessionStorage.setItem("bio", response?.data?.bio);
+      sessionStorage.setItem("role", response?.data?.role);
+      setRole(response?.data?.role)
       navigate("/");
     } else {
       toast.error("SignIn Failed");

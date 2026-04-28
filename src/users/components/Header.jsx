@@ -1,16 +1,25 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef,useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaInstagram, FaFacebookF, FaUser, FaBars } from "react-icons/fa";
 import { RiTwitterXLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 
 import base_Url from "../../service/baseUrl";
+import ContextApi from "../../ContextApi/ContextApi"
+import {profileContext} from "../../ContextApi/ContextApi" 
+
+import { authRoleContext } from "../../ContextApi/AuthContextApi";
 
 function Header() {
   const [menuState, setMenuState] = useState(false);
   const [username, setUsername] = useState("");
   const [dropdownStatus, setDropdownStatus] = useState(false);
   const [profilePic,setProfilePic]=useState("")
+  const {profileStatus,setProfileStatus}=useContext(profileContext)
+
+
+  const {setRole}=useContext(authRoleContext)
+  
   
   // 1. Create a reference for the dropdown
   const dropdownRef = useRef(null);
@@ -41,12 +50,13 @@ function Header() {
     else{
       setUsername("")
     }
-  }, []);
+  }, [profileStatus]);
 
   const signout = () => {
     sessionStorage.clear();
     setUsername("");
     setDropdownStatus(false);
+    setRole()
     toast.error("Logout successfully")
     navigate("/login");
   };
@@ -118,7 +128,7 @@ function Header() {
             ? "flex flex-col absolute top-full left-0 w-full bg-gray-800 z-40 p-5 gap-4" 
             : "hidden md:flex gap-10 font-medium uppercase text-xs tracking-widest"
           }`}>
-            <li><Link to="/" onClick={() => setMenuState(false)}>Home</Link></li>
+            <li><Link to="/" className="" onClick={() => setMenuState(false)}>Home</Link></li>
             <li><Link to="/books" onClick={() => setMenuState(false)}>Books</Link></li>
             <li><Link to="/career" onClick={() => setMenuState(false)}>Careers</Link></li>
             <li><Link to="/contact" onClick={() => setMenuState(false)}>Contact</Link></li>

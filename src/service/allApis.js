@@ -82,6 +82,14 @@ export const getProfileApi=async()=>{
     return await commonApi(`${base_Url}/get-profile`,'GET',{},header)
 }
 
+//list Job post
+export const ListJobPostApi=async(search)=>{
+    const header={
+        "Authorization":`Token ${sessionStorage.getItem('token')}`
+    }
+    return await commonApi(`${base_Url}/list-jobpost?search=${search}`,'GET',{},header)
+}
+
 //profile update 
 export const profileUpdateApi=async(data)=>{
     const header={
@@ -91,7 +99,27 @@ export const profileUpdateApi=async(data)=>{
     return await commonApi(`${base_Url}/profile-update`,'PUT',data,header)
 }
 
-// ** Admin Based APIs **
+//apply for job
+export const applyJobPostApi=async(data)=>{
+    const header={
+        "Authorization":`Token ${sessionStorage.getItem("token")}`,
+        "Content-Type":"multipart/form-data"
+    }
+    return await commonApi(`${base_Url}/apply-jobpost`,"POST",data,header)
+}
+
+//purchase book
+export const purchaseBookApi=async(data)=>{
+     const header = {
+        "Authorization": `Token ${sessionStorage.getItem('token')}`
+    }
+    return await commonApi(`${base_Url}/purchase-book`,'POST',data,header)
+}
+
+
+
+
+// ** ADMIN BASED APIs **
 
 // get all books for admin api
 export const getAllAdminBooksApi = async () => {
@@ -140,3 +168,29 @@ export const adminDeleteJobPostApi=async(id)=>{
     }
     return await commonApi(`${base_Url}/admin/delete-jobpost/${id}`,'DELETE',{},header)
 }
+
+//list applications
+export const getAdminApplicationsApi=async()=>{
+     const header = {
+        "Authorization": `Token ${sessionStorage.getItem('token')}`
+    }
+    return await commonApi(`${base_Url}/admin/get-applications`,"GET",{},header)
+}
+
+// get user profile details api
+export const getAdminProfileApi = async () => {
+    const header = {
+        "Authorization": `Token ${sessionStorage.getItem('token')}`
+    }
+    return await commonApi(`${base_Url}/get-profile`, 'GET', {}, header)
+}
+
+// update user profile api
+export const updateAdminProfileApi = async (data) => {
+    const header = {
+        "Authorization": `Token ${sessionStorage.getItem('token')}`,
+        "Content-Type": "multipart/form-data"
+    }
+    return await commonApi(`${base_Url}/profile-update`, 'PUT', data, header)
+}
+

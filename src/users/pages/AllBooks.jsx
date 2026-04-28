@@ -119,9 +119,9 @@ function AllBooks() {
               <div className=" flex flex-col items-center md:flex-row md:justify-center gap-2 md:flex-wrap">
 
                 {/* Card */}
-                {bookList.length > 0 ? (
+                {bookList.filter(item=>item.status=="approved").length > 0 ? (
                   <>
-                    {bookList.map((item) => (
+                    {bookList.filter(item=>item.status=="approved").map((item) => (
                       <div className="p-1 w-[70%] md:w-[16rem] shadow-xl text-center ">
                         <Link to={`/books/${item?._id}/view`}>
                           <img

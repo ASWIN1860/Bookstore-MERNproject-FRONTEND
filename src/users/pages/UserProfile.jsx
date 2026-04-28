@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import Header from "../components/Header";
 
 import { AiTwotoneCloseSquare } from "react-icons/ai";
@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 import Edit from "../components/Edit";
 import base_Url from "../../service/baseUrl";
+import { profileContext } from "../../ContextApi/ContextApi";
 
 import {
   addbookApi,
@@ -26,6 +27,8 @@ function UserProfile() {
 
   const [username, setUsername] = useState("");
   const [profilePic, setProfilePic] = useState("");
+
+  const {profileStatus,setProfileStatus}=useContext(profileContext)
 
   const [bookDetails, setBookDetails] = useState({
     title: "",
@@ -60,6 +63,14 @@ function UserProfile() {
       getBoughtBooks()
     }
   }, [bookStatus,purchaseHis]);
+
+  useEffect(()=>{
+    if(sessionStorage.getItem('token')){
+      setUsername(sessionStorage.getItem('uname'))
+      setProfilePic(sessionStorage.getItem('dp'))
+      setBio(sessionStorage.getItem('bio'))
+    }
+   },[profileStatus])
 
   const handleBookUploadImg = (e) => {
     const imgFile = e.target.files[0];

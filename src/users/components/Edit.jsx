@@ -1,15 +1,19 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect,useContext } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaEdit } from "react-icons/fa";
+import { toast } from "react-toastify";
 
-import { getProfileApi } from "../../service/allApis";
+import { getProfileApi,profileUpdateApi } from "../../service/allApis";
 import base_Url from "../../service/baseUrl";
+import { profileContext } from "../../ContextApi/ContextApi";
 
 function Edit() {
   const [modalStatus, setModalStatus] = useState(false);
   const [profileData,setProfileData]=useState({
     username:"",password:"",cpassword:"",profile:"",bio:"",role:""
   })
+  const {profileStatus,setProfileStatus}=useContext(profileContext)
+  const [preview,setPreview]=useState("")
 
   useEffect(()=>{
     if(sessionStorage.getItem('token')&&modalStatus){
@@ -28,6 +32,67 @@ function Edit() {
     }
 
   }
+
+  const handleSubmit=async()=>{
+      console.log(profileData)
+      const {username,password,cpassword,bio,profile}=profileData
+      if(!username || !password || !cpassword || !bio ){
+        toast.warning("Enter valid Inputs")
+      }
+      else{
+        if(password!==cpassword){
+          toast.error("Passwords mismacthes!!")
+        }
+        else{
+          const formData=new FormData()
+          if(preview){
+            for(let key in profileData){
+              formData.append(key,profileData[key])
+            }
+            const response=await profileUpdateApi(formData)
+            console.log(response)
+            if(response.status===200){
+              toast.success("Profile Updated Successfully!")
+              getProfileData()
+              const userData=response.data
+              sessionStorage.setItem('uname',userData?.username)
+              sessionStorage.setItem('bio',userData?.bio)
+              sessionStorage.setItem('dp',userData?.profile)
+              setProfileStatus(userData)
+              setModalStatus(false)
+            }
+            else{
+            toast.error("Something went wrong")
+            }
+          }
+          else{
+            const response = await profileUpdateApi(profileData)
+            console.log(response)
+            if(response.status===200){
+              toast.success("Profile Updated Successfully!")
+              getProfileData()
+              const userData=response.data
+              sessionStorage.setItem('uname',userData?.username)
+              sessionStorage.setItem('bio',userData?.bio)
+              sessionStorage.setItem('dp',userData?.profile)
+              setProfileStatus(userData)
+              setModalStatus(false)
+            }
+            else{
+            toast.error("Something went wrong")
+            }
+          }
+        }
+      }
+    }
+
+    const handleImageUpload=(e)=>{
+      const imageFile=e.target.files[0]
+      const previewUrl=URL.createObjectURL(imageFile)
+      setPreview(previewUrl)
+      setProfileData({...profileData,profile:imageFile})
+    }
+    console.log(preview)
 
   return (
     <>
@@ -68,9 +133,15 @@ function Edit() {
                     htmlFor="user-profile"
                     className="flex justify-center relative"
                   >
-                    <input type="file" className="hidden" id="user-profile" />
-                    <img src={profileData.profile?profileData.profile.startsWith("https://lh3.googleusercontent.com")?profileData.profile:`${base_Url}/uploadImg/${profileData.profile}`:"https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png"} alt="" className="w-48 h-48 object-cover" />
-                    <button className="p-2 bg-yellow-400 text-white absolute rounded bottom-0 right-37">
+                    <input type="file" onChange={(e)=>{handleImageUpload(e)}} className="hidden" id="user-profile" />
+                    {
+                      preview ?
+                      <img src={preview} className="rounded-full" width={'200px'} alt="profile_pic" />
+                      :
+                      <img src={profileData.profile?profileData.profile.startsWith("https://lh3.googleusercontent.com")?profileData.profile:`${base_Url}/uploadImg/${profileData.profile}`:"https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png"} alt="" className="w-48 h-48 object-cover" />
+                    }
+                    
+                    <button type="file" className="p-2 bg-yellow-400 text-white absolute rounded bottom-0 right-37">
                       <FaEdit />
                     </button>
                   </label>
@@ -81,23 +152,27 @@ function Edit() {
                     type="text"
                     placeholder="User Name"
                     defaultValue={profileData.username}
+                    onChange={(e)=>{setProfileData({...profileData,username:e.target.value})}}
                     className="p-2 border bg-white placeholder-gray-600 rounded-sm w-full mb-2"
                   />
                   <input
                     type="text"
                     placeholder="Password"
                     defaultValue={profileData.password}
+                    onChange={(e)=>{setProfileData({...profileData,password:e.target.value})}}
                     className="p-2 border bg-white placeholder-gray-600 rounded-sm w-full mb-2"
                   />
                   <input
                     type="text"
                     placeholder="Confirm Password"
-                    defaultValue={profileData.password}
+                    defaultValue={profileData.cpassword}
+                    onChange={(e)=>{setProfileData({...profileData,cpassword:e.target.value})}}
                     className="p-2 border bg-white placeholder-gray-600 rounded-sm w-full mb-2"
                   />
                   <textarea
                     placeholder="Bio"
                     defaultValue={profileData.bio}
+                    onChange={(e)=>{setProfileData({...profileData,bio:e.target.value})}}
                     className="p-2 border bg-white placeholder-gray-600 rounded-sm w-full"
                   ></textarea>
                 </div>
@@ -108,7 +183,7 @@ function Edit() {
                 <button className="p-2 rounded-sm border bg-orange-500 text-white hover:border-orange-500 hover:bg-white hover:text-orange-500">
                   Reset
                 </button>
-                <button className="p-2 rounded-sm border border-red bg-green-500 text-white hover:border-green-500 hover:bg-white hover:text-green-500">
+                <button onClick={handleSubmit} className="p-2 rounded-sm border border-red bg-green-500 text-white hover:border-green-500 hover:bg-white hover:text-green-500">
                   Submit
                 </button>
               </div>

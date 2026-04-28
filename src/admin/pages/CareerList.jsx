@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import AdminHeader from "../components/AdminHeader";
 import AdminSidebar from "../components/AdminSidebar";
 import Footer from "../../components/Footer";
@@ -6,8 +6,11 @@ import { FaTrash } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { IoCameraSharp } from "react-icons/io5";
 
-import { adminAddJobPostApi, adminListJobPostAPi } from "../../service/allApis";
+import { adminAddJobPostApi, adminListJobPostAPi,adminDeleteJobPostApi ,getAdminApplicationsApi} from "../../service/allApis";
 import { toast } from "react-toastify";
+
+import { careerContext } from "../../ContextApi/ContextApi";
+import base_Url from "../../service/baseUrl";
 
 function CareerList() {
   const [jobStatus, setJobStatus] = useState(true);
@@ -17,9 +20,20 @@ function CareerList() {
   const [jobList, setJobList] = useState([]);
   const [searchKey, setSearchKey] = useState("");
 
-  useEffect(() => {
-    getJobPosts();
-  }, []);
+  const {setAddCareerStatus}=useContext(careerContext)
+  const {addCareerStatus}=useContext(careerContext)
+  const [applicationList,setApplicationList]=useState([])
+
+
+  useEffect(()=>{
+    if(jobStatus){
+      getJobPosts()
+    }
+    if(applicationStatus){
+      getApplications()
+    }
+    
+  },[addCareerStatus,searchKey,applicationStatus])
 
   const getJobPosts = async () => {
     const response = await adminListJobPostAPi(searchKey);
@@ -78,6 +92,8 @@ function CareerList() {
       const response = await adminAddJobPostApi(jobData);
       if (response.status === 200) {
         toast.success("Job Post Added!!");
+        setAddCareerStatus(response.data);
+        getJobPosts(); 
         handleReset();
         setModalStatus(false);
       } else {
@@ -89,6 +105,32 @@ function CareerList() {
       }
     }
   };
+
+
+  //delete
+  const deleteJobPost=async(id)=>{
+    const response=await adminDeleteJobPostApi(id)
+    if(response.status===200){
+      getJobPosts()
+      toast.success("Deleted Success fully")
+    }
+    else{
+      console.log(response)
+      toast.warning("Something went wrong!!")
+    }
+  }
+
+  const getApplications=async()=>{
+    const  response=await getAdminApplicationsApi()
+    if(response.status===200){
+      console.log(response.data)
+      setApplicationList(response.data)
+    }
+    else{
+      console.log(response)
+    }
+  }
+
   return (
     <>
       <AdminHeader />
@@ -133,12 +175,11 @@ function CareerList() {
               <div>
                 <input
                   type="text"
-                  className="py-2 border bg-white "
+                  className="py-2 border bg-white p-2"
                   placeholder="Search By Title"
+                  onChange={(e)=>{setSearchKey(e.target.value)}}
                 />
-                <button className="bg-blue-900 text-white p-2 border border-blue-900 hover:bg-white hover:text-blue-700">
-                  Search
-                </button>
+               
               </div>
               <button
                 className="bg-green-800 text-white p-2 border border-green-800 rounded-sm hover:bg-white hover:text-green-700"
@@ -166,7 +207,7 @@ function CareerList() {
                         <p className="mt-5 font-bold">Description:{jobs.description}</p>
                       </div>
                       <div className="px-4 col-span-1 flex justify-end md:flex-none  md:justify-start ">
-                        <button className="bg-red-800 text-light p-1 float-end md:p-4 text-white  md:float-start border  border-red-800 hover:bg-white hover:text-red-600  rounded-sm  flex  md:items-center gap-1 h-[50px] ">
+                        <button onClick={()=>{deleteJobPost(jobs?._id)}} className="bg-red-800 text-light p-1 float-end md:p-4 text-white  md:float-start border  border-red-800 hover:bg-white hover:text-red-600  rounded-sm  flex  md:items-center gap-1 h-[50px] ">
                           Delete <FaTrash />
                         </button>
                       </div>
@@ -181,7 +222,9 @@ function CareerList() {
 
           {applicationStatus && (
             <div className="my-5 px-10">
-              <table className="w-full ">
+              {
+                applicationList.length>0 ?
+                 <table className="w-full ">
                 <thead className="bg-blue-600 text-white">
                   <tr>
                     <th className="p-2 border border-gray-500">Sl</th>
@@ -197,29 +240,37 @@ function CareerList() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="p-2 border border-gray-500">1</td>
+                  {
+                    applicationList.map((application,index)=>(
+                      <tr>
+                    <td className="p-2 border border-gray-500">{index+1}</td>
                     <td className="p-2 border border-gray-500">
-                      Jr Software Engineer
+                      {application?.jobtitle}
                     </td>
-                    <td className="p-2 border border-gray-500">Anu John</td>
-                    <td className="p-2 border border-gray-500">BSC CS</td>
+                    <td className="p-2 border border-gray-500">{application?.fullname}</td>
+                    <td className="p-2 border border-gray-500">{application?.qualification}</td>
                     <td className="p-2 border border-gray-500">
-                      anujohn@gmail.com
+                      {application?.email}
                     </td>
-                    <td className="p-2 border border-gray-500">9876543218</td>
+                    <td className="p-2 border border-gray-500">{application?.phone}</td>
                     <td className="p-2 border border-gray-500">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Similique ex, deserunt hic nulla corporis sint iusto se
+                      {application?.coverletter}
                     </td>
                     <td className="p-2 border border-gray-500">
-                      <a href="" className="underline text-blue-700">
+                      <a href={`${base_Url}/resumes/${application?.resume}`} className="underline text-blue-700">
                         Resume
                       </a>
                     </td>
                   </tr>
+                    ))
+                  }
+        
                 </tbody>
               </table>
+              :
+              <h2 className="text-center text-xl text-red-600">No Applicant availavle!!</h2>
+              }
+             
             </div>
           )}
           {modalStatus && (
