@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 import { getProfileApi,profileUpdateApi } from "../../service/allApis";
 import base_Url from "../../service/baseUrl";
-import { profileContext } from "../../contextApi/ContextApi";
+import { profileContext } from "../../ContextApi/ContextApi";
 
 function Edit() {
   const [modalStatus, setModalStatus] = useState(false);

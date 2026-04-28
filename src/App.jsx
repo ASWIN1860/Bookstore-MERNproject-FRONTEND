@@ -21,7 +21,7 @@ import { ToastContainer } from "react-toastify";
 import PaymentSuccess from "./users/pages/PaymentSuccess";
 import PaymentError from "./users/pages/PaymentError";
 
-import { authRoleContext } from "./contextApi/AuthContextApi";
+import { authRoleContext } from "./ContextApi/AuthContextApi";
 import { useContext } from "react";
 
 function App() {

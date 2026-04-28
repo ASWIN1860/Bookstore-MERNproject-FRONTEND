@@ -9,7 +9,7 @@ import { IoCameraSharp } from "react-icons/io5";
 import { adminAddJobPostApi, adminListJobPostAPi,adminDeleteJobPostApi ,getAdminApplicationsApi} from "../../service/allApis";
 import { toast } from "react-toastify";
 
-import { careerContext } from "../../contextApi/ContextApi";
+import { careerContext } from "../../ContextApi/ContextApi";
 import base_Url from "../../service/baseUrl";
 
 function CareerList() {

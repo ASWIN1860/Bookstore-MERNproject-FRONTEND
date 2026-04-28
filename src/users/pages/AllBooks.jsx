@@ -6,7 +6,7 @@ import Footer from "../../components/Footer";
 import { Link } from "react-router-dom";
 
 import { allBooksApi } from "../../service/allApis";
-import { searchContext } from "../../contextApi/ContextApi";
+import { searchContext } from "../../ContextApi/ContextApi";
 
 function AllBooks() {
   const [collapse, setCollapse] = useState(false);

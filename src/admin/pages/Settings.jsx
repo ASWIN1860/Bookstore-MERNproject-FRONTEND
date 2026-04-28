@@ -8,7 +8,7 @@ import base_Url from "../../service/baseUrl";
 import { getAdminProfileApi,updateAdminProfileApi } from "../../service/allApis";
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { adminContext } from "../../contextApi/ContextApi";
+import { adminContext } from "../../ContextApi/ContextApi";
 
 function Settings() {
   const [profileData, setProfileData] = useState({

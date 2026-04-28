@@ -5,10 +5,10 @@ import { RiTwitterXLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 
 import base_Url from "../../service/baseUrl";
-import ContextApi from "../../contextApi/ContextApi"
-import {profileContext} from "../../contextApi/ContextApi" 
+import ContextApi from "../../ContextApi/ContextApi"
+import {profileContext} from "../../ContextApi/ContextApi" 
 
-import { authRoleContext } from "../../contextApi/AuthContextApi";
+import { authRoleContext } from "../../ContextApi/AuthContextApi";
 
 function Header() {
   const [menuState, setMenuState] = useState(false);

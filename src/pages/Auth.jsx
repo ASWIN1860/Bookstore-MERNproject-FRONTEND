@@ -9,7 +9,7 @@ import { jwtDecode } from "jwt-decode";
 
 import { GoogleLogin } from "@react-oauth/google";
 
-import { authRoleContext } from "../contextApi/AuthContextApi";
+import { authRoleContext } from "../ContextApi/AuthContextApi";
 import { useContext } from "react";
 
 const Auth = ({ register }) => {
