@@ -9,7 +9,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import base_Url from "../../service/baseUrl";
 
 import { useContext } from "react";
-import { adminContext } from "../../ContextApi/ContextApi";
+import { adminContext } from "../../contextApi/ContextApi";
 
 function AdminSidebar() {
   const location = useLocation();

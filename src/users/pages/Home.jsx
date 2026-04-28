@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { getLatestBookApi } from "../../service/allApis";
 
 import { useNavigate } from "react-router-dom";
-import { searchContext } from "../../ContextApi/ContextApi";
+import { searchContext } from "../../contextApi/ContextApi";
 
 function Home() {
   const [latestBook, setLatestBook] = useState({});
